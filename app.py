@@ -2,12 +2,16 @@ from datetime import datetime
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from bson import ObjectId
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
 
 app = Flask(__name__)
 
-client = MongoClient("mongodb://localhost:27017")
+client = MongoClient(os.getenv("MONGO_URL"))
 
-db = client["studentCourses"]
+db = client[os.getenv("DB")]
 students = db["students"]
 courses = db["courses"]
 enrolements = db["enrolements"]
@@ -86,4 +90,4 @@ def student_info(student_id):
     return jsonify([serialize(course) for course in student_courses])
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=os.getenv("PORT"))
